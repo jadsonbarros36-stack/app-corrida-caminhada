@@ -3,188 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corrida Pro</title>
+<title>Corrida & Caminhada</title>
 <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon.png">
 <meta name="theme-color" content="#111827">
+<link rel="apple-touch-icon" href="icon.png">
 
 <style>
-body {
+body{
   margin:0;
   font-family: Arial, sans-serif;
-  background:#111827;
+  background: linear-gradient(135deg,#111827,#1f2937);
   color:white;
   text-align:center;
+  padding:30px;
 }
 
-header{
-  padding:20px;
-  font-size:22px;
-  font-weight:bold;
+h1{
+  margin-bottom:10px;
 }
 
 .card{
   background:#1f2937;
-  margin:15px;
-  padding:20px;
-  border-radius:15px;
+  padding:25px;
+  border-radius:20px;
+  max-width:400px;
+  margin:auto;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+input{
+  width:90%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
 }
 
 button{
-  padding:12px 20px;
-  margin:10px;
+  padding:12px 25px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
+  background:#10b981;
+  color:white;
   font-size:16px;
   font-weight:bold;
   cursor:pointer;
-}
-
-.start{ background:#10b981; color:white;}
-.stop{ background:#ef4444; color:white;}
-.reset{ background:#3b82f6; color:white;}
-
-.dados{
-  font-size:18px;
   margin-top:10px;
 }
 
-#historico{
-  text-align:left;
-  font-size:14px;
+.resultado{
+  margin-top:20px;
+  font-size:18px;
+  font-weight:bold;
 }
 </style>
 </head>
 
 <body>
 
-<header>🏃 Corrida & Caminhada PRO</header>
+<h1>🏃 Corrida & Caminhada</h1>
 
 <div class="card">
-  <h2>⏱️ Cronômetro</h2>
-  <div id="tempo">00:00:00</div>
-  <button class="start" onclick="iniciar()">Iniciar</button>
-  <button class="stop" onclick="parar()">Parar</button>
-  <button class="reset" onclick="resetar()">Resetar</button>
-</div>
+  <input type="number" id="distancia" placeholder="Distância (km)">
+  <input type="number" id="tempo" placeholder="Tempo (minutos)">
+  <button onclick="calcular()">Calcular</button>
 
-<div class="card">
-  <h2>📊 Dados do Treino</h2>
-  <div class="dados">Distância: <span id="distancia">0</span> km</div>
-  <div class="dados">Velocidade: <span id="velocidade">0</span> km/h</div>
-  <div class="dados">Ritmo: <span id="ritmo">0</span> min/km</div>
-</div>
-
-<div class="card">
-  <h2>📜 Histórico</h2>
-  <div id="historico"></div>
+  <div class="resultado" id="velocidade"></div>
+  <div class="resultado" id="ritmo"></div>
 </div>
 
 <script>
-let segundos = 0;
-let intervalo = null;
-let watchId = null;
-let distancia = 0;
-let ultimaPosicao = null;
+function calcular(){
+  let distancia = parseFloat(document.getElementById("distancia").value);
+  let tempoMin = parseFloat(document.getElementById("tempo").value);
 
-function formatarTempo(seg){
-  let h = Math.floor(seg/3600);
-  let m = Math.floor((seg%3600)/60);
-  let s = seg%60;
-  return 
-    String(h).padStart(2,'0') + ":" +
-    String(m).padStart(2,'0') + ":" +
-    String(s).padStart(2,'0');
-}
-
-function iniciar(){
-  if(intervalo) return;
-
-  intervalo = setInterval(()=>{
-    segundos++;
-    document.getElementById("tempo").innerText = formatarTempo(segundos);
-    calcularDados();
-  },1000);
-
-  if(navigator.geolocation){
-    watchId = navigator.geolocation.watchPosition(pos=>{
-      if(ultimaPosicao){
-        distancia += calcularDistancia(
-          ultimaPosicao.latitude,
-          ultimaPosicao.longitude,
-          pos.coords.latitude,
-          pos.coords.longitude
-        );
-      }
-      ultimaPosicao = pos.coords;
-      document.getElementById("distancia").innerText = (distancia/1000).toFixed(2);
-    });
+  if(!distancia || !tempoMin){
+    alert("Preencha todos os campos!");
+    return;
   }
+
+  let tempoHoras = tempoMin / 60;
+  let velocidade = distancia / tempoHoras;
+  let ritmo = tempoMin / distancia;
+
+  document.getElementById("velocidade").innerHTML =
+    "🚀 Velocidade: " + velocidade.toFixed(2) + " km/h";
+
+  document.getElementById("ritmo").innerHTML =
+    "🎯 Ritmo: " + ritmo.toFixed(2) + " min/km";
 }
-
-function parar(){
-  clearInterval(intervalo);
-  intervalo = null;
-  navigator.geolocation.clearWatch(watchId);
-  salvarHistorico();
-}
-
-function resetar(){
-  segundos = 0;
-  distancia = 0;
-  ultimaPosicao = null;
-  document.getElementById("tempo").innerText = "00:00:00";
-  document.getElementById("distancia").innerText = "0";
-  document.getElementById("velocidade").innerText = "0";
-  document.getElementById("ritmo").innerText = "0";
-}
-
-function calcularDados(){
-  let horas = segundos/3600;
-  let km = distancia/1000;
-  if(horas>0){
-    let vel = km/horas;
-    document.getElementById("velocidade").innerText = vel.toFixed(2);
-  }
-  if(km>0){
-    let ritmo = (segundos/60)/km;
-    document.getElementById("ritmo").innerText = ritmo.toFixed(2);
-  }
-}
-
-function calcularDistancia(lat1,lon1,lat2,lon2){
-  let R=6371e3;
-  let φ1=lat1*Math.PI/180;
-  let φ2=lat2*Math.PI/180;
-  let Δφ=(lat2-lat1)*Math.PI/180;
-  let Δλ=(lon2-lon1)*Math.PI/180;
-
-  let a=Math.sin(Δφ/2)*Math.sin(Δφ/2)+
-  Math.cos(φ1)*Math.cos(φ2)*
-  Math.sin(Δλ/2)*Math.sin(Δλ/2);
-  let c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-  return R*c;
-}
-
-function salvarHistorico(){
-  let km = (distancia/1000).toFixed(2);
-  let treino = "🏃 " + km + " km - " + formatarTempo(segundos);
-  let lista = JSON.parse(localStorage.getItem("treinos")||"[]");
-  lista.push(treino);
-  localStorage.setItem("treinos",JSON.stringify(lista));
-  carregarHistorico();
-}
-
-function carregarHistorico(){
-  let lista = JSON.parse(localStorage.getItem("treinos")||"[]");
-  let html="";
-  lista.reverse().forEach(t=>{
-    html += "<div>"+t+"</div>";
-  });
-  document.getElementById("historico").innerHTML = html;
-}
-
-carregarHistorico();
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js');
