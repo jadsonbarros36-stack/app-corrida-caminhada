@@ -5,46 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Corrida & Caminhada</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#111827">
 <link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#fc4c02">
 
 <style>
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#111827,#1f2937);
-  color:white;
-  text-align:center;
-  padding:30px;
+:root{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#ffffff;
+  --primary:#fc4c02;
 }
 
-h1{
-  margin-bottom:10px;
+.light{
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#111827;
+}
+
+body{
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:0.3s;
+}
+
+header{
+  padding:20px;
+  font-size:22px;
+  font-weight:bold;
+  text-align:center;
+  background:var(--primary);
+  color:white;
+}
+
+.container{
+  padding:20px;
+  max-width:420px;
+  margin:auto;
 }
 
 .card{
-  background:#1f2937;
+  background:var(--card);
   padding:25px;
   border-radius:20px;
-  max-width:400px;
-  margin:auto;
-  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  margin-bottom:20px;
+  transition:0.3s;
 }
 
 input{
-  width:90%;
-  padding:12px;
+  width:100%;
+  padding:14px;
   margin:10px 0;
-  border-radius:10px;
+  border-radius:12px;
   border:none;
   font-size:16px;
+  background:#e2e8f0;
+}
+
+.light input{
+  background:#f1f5f9;
 }
 
 button{
-  padding:12px 25px;
+  width:100%;
+  padding:14px;
   border:none;
-  border-radius:12px;
-  background:#10b981;
+  border-radius:14px;
+  background:var(--primary);
   color:white;
   font-size:16px;
   font-weight:bold;
@@ -53,16 +82,30 @@ button{
 }
 
 .resultado{
-  margin-top:20px;
+  margin-top:15px;
   font-size:18px;
   font-weight:bold;
+}
+
+.toggle{
+  text-align:center;
+  margin-bottom:15px;
+  cursor:pointer;
+  font-size:14px;
+  opacity:0.8;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🏃 Corrida & Caminhada</h1>
+<header>🏃 Corrida & Caminhada</header>
+
+<div class="container">
+
+<div class="toggle" onclick="alternarTema()">
+🌙 / ☀️ Alternar Modo
+</div>
 
 <div class="card">
   <input type="number" id="distancia" placeholder="Distância (km)">
@@ -71,6 +114,8 @@ button{
 
   <div class="resultado" id="velocidade"></div>
   <div class="resultado" id="ritmo"></div>
+</div>
+
 </div>
 
 <script>
@@ -92,6 +137,10 @@ function calcular(){
 
   document.getElementById("ritmo").innerHTML =
     "🎯 Ritmo: " + ritmo.toFixed(2) + " min/km";
+}
+
+function alternarTema(){
+  document.body.classList.toggle("light");
 }
 
 if ('serviceWorker' in navigator) {
