@@ -3,95 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corrida & Caminhada</title>
+<title>Corrida PRO</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
-<meta name="theme-color" content="#fc4c02">
+<meta name="theme-color" content="#fc5200">
 
 <style>
 :root{
-  --bg:#0f172a;
-  --card:#1e293b;
+  --primary:#fc5200;
+  --bg:#0d1117;
+  --card:#161b22;
   --text:#ffffff;
-  --primary:#fc4c02;
 }
 
 .light{
-  --bg:#f1f5f9;
+  --bg:#f3f4f6;
   --card:#ffffff;
   --text:#111827;
 }
 
 body{
   margin:0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
   background:var(--bg);
   color:var(--text);
   transition:0.3s;
 }
 
 header{
-  padding:20px;
-  font-size:22px;
-  font-weight:bold;
-  text-align:center;
   background:var(--primary);
-  color:white;
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:1px;
 }
 
 .container{
   padding:20px;
-  max-width:420px;
+  max-width:450px;
   margin:auto;
 }
 
 .card{
   background:var(--card);
   padding:25px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
-  margin-bottom:20px;
-  transition:0.3s;
+  border-radius:25px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+  margin-top:-40px;
 }
 
 input{
   width:100%;
-  padding:14px;
-  margin:10px 0;
-  border-radius:12px;
+  padding:16px;
+  margin:12px 0;
+  border-radius:15px;
   border:none;
-  font-size:16px;
-  background:#e2e8f0;
-}
-
-.light input{
-  background:#f1f5f9;
+  font-size:17px;
+  background:#e5e7eb;
 }
 
 button{
   width:100%;
-  padding:14px;
+  padding:16px;
   border:none;
-  border-radius:14px;
+  border-radius:18px;
   background:var(--primary);
   color:white;
-  font-size:16px;
+  font-size:17px;
   font-weight:bold;
+  margin-top:15px;
+  box-shadow:0 8px 20px rgba(252,82,0,0.4);
   cursor:pointer;
-  margin-top:10px;
+  transition:0.2s;
+}
+
+button:active{
+  transform:scale(0.97);
 }
 
 .resultado{
-  margin-top:15px;
-  font-size:18px;
-  font-weight:bold;
+  margin-top:20px;
+  font-size:20px;
+  font-weight:600;
+  text-align:center;
 }
 
 .toggle{
-  text-align:center;
-  margin-bottom:15px;
-  cursor:pointer;
+  text-align:right;
+  margin-top:10px;
   font-size:14px;
+  cursor:pointer;
   opacity:0.8;
 }
 </style>
@@ -99,44 +101,42 @@ button{
 
 <body>
 
-<header>🏃 Corrida & Caminhada</header>
+<header>🏃 CORRIDA PRO</header>
 
 <div class="container">
-
-<div class="toggle" onclick="alternarTema()">
-🌙 / ☀️ Alternar Modo
-</div>
-
 <div class="card">
-  <input type="number" id="distancia" placeholder="Distância (km)">
-  <input type="number" id="tempo" placeholder="Tempo (minutos)">
-  <button onclick="calcular()">Calcular</button>
 
-  <div class="resultado" id="velocidade"></div>
-  <div class="resultado" id="ritmo"></div>
+<div class="toggle" onclick="alternarTema()">🌙 / ☀️</div>
+
+<input type="number" id="distancia" placeholder="Distância em KM">
+<input type="number" id="tempo" placeholder="Tempo em Minutos">
+
+<button onclick="calcular()">CALCULAR</button>
+
+<div class="resultado" id="velocidade"></div>
+<div class="resultado" id="ritmo"></div>
+
 </div>
-
 </div>
 
 <script>
 function calcular(){
-  let distancia = parseFloat(document.getElementById("distancia").value);
-  let tempoMin = parseFloat(document.getElementById("tempo").value);
+  let distancia=parseFloat(document.getElementById("distancia").value);
+  let tempo=parseFloat(document.getElementById("tempo").value);
 
-  if(!distancia || !tempoMin){
+  if(!distancia || !tempo){
     alert("Preencha todos os campos!");
     return;
   }
 
-  let tempoHoras = tempoMin / 60;
-  let velocidade = distancia / tempoHoras;
-  let ritmo = tempoMin / distancia;
+  let velocidade=distancia/(tempo/60);
+  let ritmo=tempo/distancia;
 
-  document.getElementById("velocidade").innerHTML =
-    "🚀 Velocidade: " + velocidade.toFixed(2) + " km/h";
+  document.getElementById("velocidade").innerHTML=
+    "🚀 "+velocidade.toFixed(2)+" km/h";
 
-  document.getElementById("ritmo").innerHTML =
-    "🎯 Ritmo: " + ritmo.toFixed(2) + " min/km";
+  document.getElementById("ritmo").innerHTML=
+    "🎯 "+ritmo.toFixed(2)+" min/km";
 }
 
 function alternarTema(){
