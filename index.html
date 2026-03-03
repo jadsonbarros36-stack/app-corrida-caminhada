@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Corrida & Caminhada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <link rel="apple-touch-icon" href="icon.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0d6efd, #00c6ff);
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px;
+      width: 80%;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      color: #0d6efd;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🏃‍♂️ Corrida & Caminhada</h1>
+  <p>Calcule sua velocidade média (km/h)</p>
+
+  <input type="number" id="distancia" placeholder="Distância (km)">
+  <input type="number" id="tempo" placeholder="Tempo (minutos)">
+  <br>
+  <button onclick="calcular()">Calcular</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    function calcular() {
+      let distancia = parseFloat(document.getElementById("distancia").value);
+      let tempoMin = parseFloat(document.getElementById("tempo").value);
+
+      if (!distancia || !tempoMin) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      let tempoHoras = tempoMin / 60;
+      let velocidade = distancia / tempoHoras;
+
+      document.getElementById("resultado").innerHTML =
+        "Sua velocidade média foi: " + velocidade.toFixed(2) + " km/h 🚀";
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+
+</body>
+</html>
